@@ -1,0 +1,25 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'set'
+      - 'image'
+      - 'deployment/cloud-native-web-app'
+      - 'cloud-native-web-app=docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=YOUR_ZONE'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=YOUR_CLUSTER_NAME'
+
+images:
+  - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
