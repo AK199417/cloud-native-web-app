@@ -3,7 +3,7 @@ options:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/sit737-26t1-kumaraguru-a6837e2/secrets/dockerhub-token/versions/latest
+    - versionName: projects/738067943215/secrets/dockerhub-token/versions/latest
       env: 'DOCKERHUB_TOKEN'
 
 steps:
