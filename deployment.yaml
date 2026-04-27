@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-native-web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloud-native-web-app
+  template:
+    metadata:
+      labels:
+        app: cloud-native-web-app
+    spec:
+      containers:
+        - name: cloud-native-web-app
+          image: docker.io/arulrajah/cloud-native-web-app:v1
+          ports:
+            - containerPort: 80

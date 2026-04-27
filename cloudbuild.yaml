@@ -1,38 +1,21 @@
-availableSecrets:
-  secretManager:
-    - versionName: projects/738067943215/secrets/dockerhub-token/versions/latest
-      env: 'DOCKERHUB_TOKEN'
+options:
+  logging: NONE
 
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    secretEnv: ['DOCKERHUB_TOKEN']
-    args:
-      - '-c'
-      - |
-        echo "$$DOCKERHUB_TOKEN" | docker login -u arulrajah --password-stdin
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
-      - '.'
-
-  - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
-
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
-      - 'set'
-      - 'image'
-      - 'deployment/cloud-native-web-app'
-      - 'cloud-native-web-app=docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+      - 'apply'
+      - '-f'
+      - 'deployment.yaml'
     env:
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
       - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
 
-images:
-  - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'apply'
+      - '-f'
+      - 'service.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
