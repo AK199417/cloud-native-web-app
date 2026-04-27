@@ -1,8 +1,20 @@
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: NONE
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/sit737-26t1-kumaraguru-a6837e2/secrets/dockerhub-token/versions/latest
+      env: 'DOCKERHUB_TOKEN'
 
 steps:
-  # Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    secretEnv: ['DOCKERHUB_TOKEN']
+    args:
+      - '-c'
+      - |
+        echo "$$DOCKERHUB_TOKEN" | docker login -u arulrajah --password-stdin
+
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
@@ -10,13 +22,11 @@ steps:
       - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
       - '.'
 
-  # Push Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
 
-  # Deploy to Kubernetes
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
       - 'set'
