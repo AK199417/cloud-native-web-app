@@ -1,4 +1,8 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 steps:
+  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
@@ -6,11 +10,13 @@ steps:
       - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
       - '.'
 
+  # Push Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
 
+  # Deploy to Kubernetes
   - name: 'gcr.io/cloud-builders/kubectl'
     args:
       - 'set'
@@ -18,8 +24,8 @@ steps:
       - 'deployment/cloud-native-web-app'
       - 'cloud-native-web-app=docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
     env:
-      - 'CLOUDSDK_COMPUTE_ZONE=YOUR_ZONE'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=YOUR_CLUSTER_NAME'
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
 
 images:
   - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
