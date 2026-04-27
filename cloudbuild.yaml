@@ -1,5 +1,5 @@
 options:
-  logging: NONE
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
 availableSecrets:
   secretManager:
