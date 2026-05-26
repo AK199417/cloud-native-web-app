@@ -32,7 +32,7 @@ steps:
   # Step 5: Deploy updated image to GKE
   - name: 'gcr.io/cloud-builders/gke-deploy'
     args:
-      - 'run'
+      - 'apply'
       - '--filename=deployment.yaml'
       - '--image=docker.io/arulrajah/cloud-native-web-app:latest'
       - '--location=australia-southeast1'
