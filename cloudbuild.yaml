@@ -43,4 +43,4 @@ images:
   - 'docker.io/arulrajah/cloud-native-web-app:latest'
 
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: NONE
