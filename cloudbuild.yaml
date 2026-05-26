@@ -1,0 +1,53 @@
+steps:
+  # Step 1: Login to Docker Hub using Secret Manager
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "$$DOCKERHUB_TOKEN" | docker login -u arulrajah --password-stdin
+    secretEnv:
+      - 'DOCKERHUB_TOKEN'
+
+  # Step 2: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+      - '-t'
+      - 'docker.io/arulrajah/cloud-native-web-app:latest'
+      - '.'
+
+  # Step 3: Push image with commit SHA tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+
+  # Step 4: Push latest image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'docker.io/arulrajah/cloud-native-web-app:latest'
+
+  # Step 5: Deploy updated image to GKE
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    args:
+      - 'run'
+      - '--filename=deployment.yaml'
+      - '--image=docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+      - '--location=australia-southeast1'
+      - '--cluster=cluster-1'
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/sit737-26t1-kumaraguru-a6837e2/secrets/dockerhub-token/versions/latest
+      env: 'DOCKERHUB_TOKEN'
+
+images:
+  - 'docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+  - 'docker.io/arulrajah/cloud-native-web-app:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
