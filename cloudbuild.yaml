@@ -34,7 +34,7 @@ steps:
     args:
       - 'run'
       - '--filename=deployment.yaml'
-      - '--image=docker.io/arulrajah/cloud-native-web-app:$SHORT_SHA'
+      - '--image=docker.io/arulrajah/cloud-native-web-app:latest'
       - '--location=australia-southeast1'
       - '--cluster=cluster-1'
 
