@@ -5,9 +5,7 @@ steps:
     args:
       - '-c'
       - |
-        echo "$$DOCKERHUB_TOKEN" | docker login -u arulrajah --password-stdin
-    secretEnv:
-      - 'DOCKERHUB_TOKEN'
+        echo "${_DOCKERHUB_TOKEN}" | docker login --username=arulrajah --password-stdin
 
   # Step 2: Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
